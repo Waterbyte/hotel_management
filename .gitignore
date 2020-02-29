@@ -14,3 +14,6 @@ venv/
 
 #self note files
 notes*
+
+#media directory
+media/

@@ -1,3 +1,74 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 
-# Create your models here.
+
+class HotelManager(models.Model):
+    id = models.IntegerField(primary_key=True)
+    name = models.TextField(blank=False)
+    address = models.TextField(blank=False)
+    city = models.TextField(blank=False)
+    state = models.TextField(blank=False)
+    country = models.TextField(blank=False)
+    zip_code = models.TextField(blank=False)
+    phone_number = models.TextField(blank=False)
+    email_address = models.EmailField(blank=False)
+    image = models.ImageField(upload_to='/media/hotels/')
+
+    def clean(self):
+        super().clean()
+        model = self.__class__
+        num_hotels = model.objects.count()
+        if num_hotels >= 100:
+            raise ValidationError("Max limit of 100 hotels reached.")
+
+    def __str__(self):
+        return str(self.id) + ": " + self.name
+
+
+class RoomTypeManager(models.Model):
+    id = models.IntegerField(primary_key=True)
+    name = models.TextField(blank=False)
+    price = models.IntegerField(blank=False)
+    hotel_id_key = models.ForeignKey(HotelManager, on_delete=models.CASCADE)
+
+    def clean(self):
+        super().clean()
+        model = self.__class__
+        hotel_id = self.hotel_id_key
+        num_room_type = model.objects.filter(hotel_id_key=hotel_id).count()
+        if num_room_type >= 15:
+            raise ValidationError("Max limit of 15 room type reached.")
+
+    def __str__(self):
+        return str(self.id) + ": " + self.name
+
+
+class RoomManager(models.Model):
+    id = models.IntegerField(primary_key=True)
+    room_name = models.TextField()
+    room_type_key = models.ForeignKey(RoomTypeManager, on_delete=models.CASCADE)
+    image = models.ImageField(blank=False)
+
+    def clean(self):
+        super().clean()
+        model = self.__class__
+        room_type_id = self.room_type_key
+        num_room = model.objects.filter(room_type_key=room_type_id).count()
+        if num_room >= 50:
+            raise ValidationError("Max limit of 50 rooms reached for this room type.")
+
+    def __str__(self):
+        return str(self.id) + ": " + self.room_name
+
+
+class BookingManager(models.Model):
+    id = models.IntegerField(primary_key=True)
+    start_date = models.DateTimeField(blank=False)
+    end_date = models.DateTimeField(blank=False)
+    cust_full_name = models.TextField(blank=False)
+    cust_mail_id = models.EmailField(blank=True)
+    cust_phone_number = models.TextField(blank=False)
+    cust_pan_number = models.TextField(blank=True)
+    total_nights = models.IntegerField()
+    total_price = models.IntegerField()
+    receptionist_key = models.ForeignKey('users.CustomUser', on_delete=models.CASCADE)
