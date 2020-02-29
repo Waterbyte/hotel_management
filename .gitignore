@@ -1,0 +1,16 @@
+# Byte-compiled /optimized / DLL files
+__pycache__/
+
+# python
+venv/
+
+# IDE
+.idea/
+
+# Django stuff
+*.log
+*.sqlite3
+/CACHE
+
+#self note files
+notes*
