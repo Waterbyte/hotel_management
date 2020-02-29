@@ -10,3 +10,12 @@ Answer:     The application is not customer centric, it is receptionist centric.
             himself before coming to hotel and it would also be complex for receptionist to first create customer and
             then link it to booking table. We can do automatic linking of customer details to user model for future use
             but that is currently unnecessary to the requirements.
+
+Credentials:
+    Admin:
+        Username: admin
+        Password: Hotel@123
+
+    Receptionist:
+        Username: receptionist1
+        Password: Hotel@123

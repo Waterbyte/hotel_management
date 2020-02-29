@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Index{% endblock %}
+{% block content %}
+
+<div class="ml-5 mt-5">
+    {% if user.is_authenticated %}
+    Hi {{ user.username }}!
+    <div class="container center_div  shadow p-5 my-5">
+        {% include 'hotels/receptionist_home.html' %}
+    </div>
+    {% else %}
+    {% include 'hotels/welcome.html' %}
+    {% endif %}
+</div>
+
+
+{% endblock %}

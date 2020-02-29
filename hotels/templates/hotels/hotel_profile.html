@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Hotel Profile{% endblock %}
+{% block content %}
+
+<div class="ml-5 mt-5">
+    {% if user.is_authenticated %}
+    <div class="col align-self-center">
+        <span class="font-weight-bold">Name:</span> {{ hotelmanager.name }} <br>
+        <span class="font-weight-bold">Address:</span> {{ hotelmanager.address }} <br>
+        <span class="font-weight-bold">City:</span> {{ hotelmanager.city }} <br>
+        <span class="font-weight-bold">State:</span> {{ hotelmanager.state }} <br>
+        <span class="font-weight-bold">Country:</span> {{ hotelmanager.country }} <br>
+        <span class="font-weight-bold">ZipCode:</span> {{ hotelmanager.zip_code }} <br>
+        <span class="font-weight-bold">Phone Number:</span> {{ hotelmanager.phone_number }} <br>
+        <span class="font-weight-bold">Email Address:</span> {{ hotelmanager.email_address }} <br>
+        <br>
+        <a class="btn btn-secondary " href="/hotel/profile/edit" role="button">Edit Hotel Profile</a>
+
+    </div>
+    {% else %}
+    {% include 'hotels/welcome.html' %}
+    {% endif %}
+</div>
+
+{% endblock %}

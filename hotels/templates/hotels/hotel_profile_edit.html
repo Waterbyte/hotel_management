@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Hotel Profile{% endblock %}
+{% block content %}
+
+<div class="ml-5 mt-5">
+    {% if user.is_authenticated %}
+    <form class="col-md-4 col-md-offset-4" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-primary" type="submit">Submit</button>
+        {% else %}
+        {% include 'hotels/welcome.html' %}
+        {% endif %}
+</div>
+
+{% endblock %}
