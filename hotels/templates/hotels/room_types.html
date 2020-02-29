@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Room Types{% endblock %}
+{% block content %}
+
+<div class="ml-5 mt-5">
+    {% if user.is_authenticated %}
+    {% for room_type in object_list %}
+    <li>{{ room_type.name }} - {{ room_type.price }}  (<a href="{% url 'room_type_delete' pk=room_type.id %}">Delete</a>)</li>
+    {% empty %}
+    <li>No room types yet.</li>
+    {% endfor %}
+</div>
+{% else %}
+{% include 'hotels/welcome.html' %}
+{% endif %}
+</div>
+
+{% endblock %}

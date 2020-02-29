@@ -36,10 +36,16 @@ class RoomTypeManager(models.Model):
     def clean(self):
         super().clean()
         model = self.__class__
+
         hotel_id = self.hotel_id_key
         num_room_type = model.objects.filter(hotel_id_key=hotel_id).count()
         if num_room_type >= 15:
             raise ValidationError("Max limit of 15 room type reached.")
+
+        received_name = self.name
+        name_present = model.objects.filter(hotel_id_key=hotel_id).filter(name=received_name)
+        if name_present:
+            raise ValidationError("Room of this type already present.")
 
     def __str__(self):
         return str(self.id) + ": " + self.name
@@ -55,9 +61,15 @@ class RoomManager(models.Model):
         super().clean()
         model = self.__class__
         room_type_id = self.room_type_key
+
         num_room = model.objects.filter(room_type_key=room_type_id).count()
         if num_room >= 50:
             raise ValidationError("Max limit of 50 rooms reached for this room type.")
+
+        received_room_name = self.name
+        name_present = model.objects.filter(room_type_key=room_type_id).filter(room_name=received_room_name)
+        if name_present:
+            raise ValidationError("For current type, this room is already present")
 
     def __str__(self):
         return str(self.id) + ": " + self.room_name
