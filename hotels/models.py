@@ -1,6 +1,8 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 
+from .utility import hotel_directory_path, room_directory_path
+
 
 class HotelManager(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -12,7 +14,7 @@ class HotelManager(models.Model):
     zip_code = models.TextField(blank=False)
     phone_number = models.TextField(blank=False)
     email_address = models.EmailField(blank=False)
-    image = models.ImageField(upload_to='/media/hotels/')
+    image = models.ImageField(blank=False, upload_to=hotel_directory_path)
 
     def clean(self):
         super().clean()
@@ -47,7 +49,7 @@ class RoomManager(models.Model):
     id = models.IntegerField(primary_key=True)
     room_name = models.TextField()
     room_type_key = models.ForeignKey(RoomTypeManager, on_delete=models.CASCADE)
-    image = models.ImageField(blank=False)
+    image = models.ImageField(blank=False, upload_to=room_directory_path)
 
     def clean(self):
         super().clean()

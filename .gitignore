@@ -16,4 +16,5 @@ venv/
 notes*
 
 #media directory
-media/
+media/hotels/*
+media/rooms/*
