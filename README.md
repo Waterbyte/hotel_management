@@ -12,15 +12,18 @@
 > Due to above fact, also assuming that 1 customer would book 1 room. If a customer books multiple room
 > in current db design then we are going to need customer data in user model to prevent redundancy in booking table.
 
-######Things that could have been done better with more time
+####Things that could have been done better with more time
 >1. CSS 
 >2. Validation on user submitted data. As of now, it is assumed that  user will enter correct data.
 >3. Docker implementation. Although I have previously done docker implementation for similar project: https://github.com/Waterbyte/dockerizedLoanSystem
 >4. Edit Room and Edit Room Type
+>5. Multiple images for hotel
+>6. Code grouping in separate files. 
 
-#####Reproduction steps:
+####Reproduction steps:
 >1. Create virtualenv
 >2. pip install -r requirements.txt
 >3. py manage.py migrate
 >4. py manage.py loaddata fixture.json
+>5. py manage.py runserver
 >5. Password for admin and receptionist can be found in notes 
