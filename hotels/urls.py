@@ -3,7 +3,7 @@ from django.urls import path
 from .views import (IndexView, HotelProfile, HotelProfileEdit,
                     RoomTypeListView, RoomTypeAddView, RoomTypeDeleteView,
                     RoomListView, RoomAddView, RoomDeleteView,
-                    BookingListView, BookingAddView, BookingDeleteView)
+                    BookingListView, BookingAddView, BookingDeleteView, BookingEditView)
 
 urlpatterns = [
     path('', IndexView.as_view(), name='index'),
@@ -17,5 +17,6 @@ urlpatterns = [
     path('room/delete/<int:pk>', RoomDeleteView.as_view(), name='room_delete'),
     path('booking/view', BookingListView.as_view(), name='booking_list'),
     path('booking/add', BookingAddView.as_view(), name='booking_add'),
-    path('booking/delete/<int:pk>', BookingDeleteView.as_view(), name='booking_delete')
+    path('booking/delete/<int:pk>', BookingDeleteView.as_view(), name='booking_delete'),
+    path('booking/edit/<int:pk>', BookingEditView.as_view(), name='booking_edit')
 ]

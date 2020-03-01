@@ -5,6 +5,7 @@ from django.urls import reverse_lazy
 from django.views.generic import DetailView, UpdateView, ListView, CreateView, DeleteView
 from django.views.generic.base import TemplateView
 
+from hotels import utility
 from hotels.models import HotelManager, RoomTypeManager, RoomManager, BookingManager
 
 
@@ -149,12 +150,6 @@ class BookingAddView(CreateView):
         form.fields['room_key'].queryset = self.get_available_rooms()
         return form
 
-    def calculate_nights(self, object):
-        start_date = object.start_date
-        end_date = object.end_date
-        delta = (end_date - start_date)
-        return delta.days
-
     def form_valid(self, form):
         self.object = form.save(commit=False)
         all_room = RoomManager.objects.filter(room_type_key__hotel_id_key=self.request.user.hotel.id) \
@@ -164,7 +159,7 @@ class BookingAddView(CreateView):
             room_type_chosen = RoomManager.objects.get(id=room_chosen).room_type_key.id
             room_type_price = RoomTypeManager.objects.get(id=room_type_chosen).price
 
-            self.object.total_nights = self.calculate_nights(self.object)
+            self.object.total_nights = utility.calculate_nights(self.object)
             self.object.total_price = room_type_price * self.object.total_nights
             self.object.receptionist_key = self.request.user
             return super(BookingAddView, self).form_valid(form)
@@ -181,3 +176,31 @@ class BookingDeleteView(DeleteView):
             return self.delete(*args, **kwargs)
         else:
             raise Http404
+
+
+class BookingEditView(UpdateView):
+    model = BookingManager
+    template_name = 'hotels/booking_edit.html'
+    success_url = reverse_lazy('booking_list')
+    fields = ['start_date', 'end_date', 'cust_full_name', 'cust_mail_id', 'cust_phone_number',
+              'cust_pan_number', 'room_key']
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        # update only for change in start_date and end_date
+
+        if 'start_date' in form.changed_data or 'end_date' in form.changed_data:
+            all_room = RoomManager.objects.filter(room_type_key__hotel_id_key=self.request.user.hotel.id) \
+                .values_list('id', flat=True)
+            if self.object.room_key.id in all_room:
+                room_chosen = self.object.room_key.id
+                room_type_chosen = RoomManager.objects.get(id=room_chosen).room_type_key.id
+                room_type_price = RoomTypeManager.objects.get(id=room_type_chosen).price
+
+                self.object.total_nights = utility.calculate_nights(self.object)
+                self.object.total_price = room_type_price * self.object.total_nights
+                return super(BookingEditView, self).form_valid(form)
+            else:
+                raise Http404
+        else:
+            return super(BookingEditView, self).form_valid(form)

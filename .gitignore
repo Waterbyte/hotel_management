@@ -14,7 +14,3 @@ venv/
 
 #self note files
 notes*
-
-#media directory
-media/hotels/*
-media/rooms/*
