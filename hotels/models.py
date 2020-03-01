@@ -48,7 +48,7 @@ class RoomTypeManager(models.Model):
             raise ValidationError("Room of this type already present.")
 
     def __str__(self):
-        return str(self.id) + ": " + self.name
+        return self.name
 
 
 class RoomManager(models.Model):
@@ -72,17 +72,18 @@ class RoomManager(models.Model):
             raise ValidationError("For current type, this room is already present")
 
     def __str__(self):
-        return str(self.id) + ": " + self.room_name
+        return str(self.room_type_key) + "-" + self.room_name
 
 
 class BookingManager(models.Model):
     id = models.IntegerField(primary_key=True)
     start_date = models.DateTimeField(blank=False)
     end_date = models.DateTimeField(blank=False)
-    cust_full_name = models.TextField(blank=False)
-    cust_mail_id = models.EmailField(blank=True)
-    cust_phone_number = models.TextField(blank=False)
-    cust_pan_number = models.TextField(blank=True)
+    cust_full_name = models.TextField(blank=False, verbose_name='Customer Name')
+    cust_mail_id = models.EmailField(blank=True, verbose_name='Customer Email')
+    cust_phone_number = models.TextField(blank=False, verbose_name='Customer Phone')
+    cust_pan_number = models.TextField(blank=True, verbose_name='Customer PAN')
     total_nights = models.IntegerField()
     total_price = models.IntegerField()
     receptionist_key = models.ForeignKey('users.CustomUser', on_delete=models.CASCADE)
+    room_key = models.ForeignKey(RoomManager, on_delete=models.CASCADE, verbose_name='Room')

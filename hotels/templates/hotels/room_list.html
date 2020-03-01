@@ -9,7 +9,7 @@
     {% endif %}
     {% for room in object_list %}
     <li>{{ room.room_type_key }} - {{ room.room_name }} (<a href="{% url 'room_delete' pk=room.id %}">Delete</a>)</li>
-    <img src="/media/{{room.image}}" alt="room image"  height="200" width="300">
+    <img alt="room image" height="200" src="/media/{{room.image}}" width="300">
     {% empty %}
     <strong>No rooms yet.</strong>
     {% endfor %}
