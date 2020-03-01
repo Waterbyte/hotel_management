@@ -6,13 +6,17 @@ from django.views.generic import DetailView, UpdateView, ListView, CreateView, D
 from django.views.generic.base import TemplateView
 
 from hotels.forms import HotelEditForm
-from hotels.models import HotelManager, RoomTypeManager
+from hotels.models import HotelManager, RoomTypeManager, RoomManager
 
 
+# Generic class views for main page
+# Functionality: Displaying
 class IndexView(TemplateView):
     template_name = 'hotels/index.html'
 
 
+# Generic class views for Hotel Profile
+# Functionality: Listing, Updating
 class HotelProfile(DetailView):
     model = HotelManager
     template_name = 'hotels/hotel_profile.html'
@@ -33,8 +37,10 @@ class HotelProfileEdit(UpdateView):
             return get_object_or_404(HotelManager, pk=self.request.user.hotel.id)
 
 
+# Generic class views for Room Types
+# Functionality: Listing, Creating and Deleting
 class RoomTypeListView(ListView):
-    template_name = 'hotels/room_types.html'
+    template_name = 'hotels/room_types_list.html'
     model = RoomTypeManager
 
     def get_queryset(self):
@@ -52,14 +58,12 @@ class RoomTypeAddView(CreateView):
         initial['hotel_id_key'] = self.request.user.hotel.id
         return initial
 
-    def get_queryset(self):
-        return super().get_queryset().filter(hotel_id_key=self.request.user.hotel.id)
-
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        if self.object.hotel_id_key == self.request.user.hotel.id:
-            self.object.save()
-        return super().form_valid(form)
+        if self.object.hotel_id_key.id == self.request.user.hotel.id:
+            return super().form_valid(form)
+        else:
+            raise Http404
 
 
 class RoomTypeDeleteView(DeleteView):
@@ -67,7 +71,51 @@ class RoomTypeDeleteView(DeleteView):
     success_url = reverse_lazy('room_type_list')
 
     def get(self, *args, **kwargs):
-        if self.get_object().hotel_id_key == self.request.user.hotel:
+        if self.get_object().hotel_id_key.id == self.request.user.hotel.id:
+            return self.delete(*args, **kwargs)
+        else:
+            raise Http404
+
+
+# Generic class views for Rooms
+# Functionality: Listing, Creating and Deleting
+class RoomListView(ListView):
+    template_name = 'hotels/room_list.html'
+    model = RoomManager
+
+    def get_queryset(self):
+        room_types_inner = RoomTypeManager.objects.filter(hotel_id_key=self.request.user.hotel.id).values('id')
+        return super().get_queryset().filter(room_type_key__in=room_types_inner)
+
+
+class RoomAddView(CreateView):
+    template_name = 'hotels/room_add.html'
+    model = RoomManager
+    fields = ['room_name', 'room_type_key', 'image']
+    success_url = reverse_lazy('room_list')
+
+    def get_initial(self):
+        initial = super().get_initial()
+        inner_qs = RoomTypeManager.objects.filter(hotel_id_key=self.request.user.hotel.id).values('id')
+        initial['room_type_key'] = inner_qs
+        return initial
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        room_types_inner = RoomTypeManager.objects.filter(hotel_id_key=self.request.user.hotel.id).values_list('id', flat=True)
+        if self.object.room_type_key.id in room_types_inner:
+            return super().form_valid(form)
+        else:
+            raise Http404
+
+
+class RoomDeleteView(DeleteView):
+    model = RoomManager
+    success_url = reverse_lazy('room_list')
+
+    def get(self, *args, **kwargs):
+        room_types_inner = RoomTypeManager.objects.filter(hotel_id_key=self.request.user.hotel).values_list('id', flat=True)
+        if self.get_object().room_type_key.id in room_types_inner:
             return self.delete(*args, **kwargs)
         else:
             raise Http404

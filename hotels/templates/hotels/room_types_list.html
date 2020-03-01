@@ -4,10 +4,14 @@
 
 <div class="ml-5 mt-5">
     {% if user.is_authenticated %}
+    {% if object_list %}
+    <strong> Name - Price </strong>
+    {% endif %}
     {% for room_type in object_list %}
-    <li>{{ room_type.name }} - {{ room_type.price }}  (<a href="{% url 'room_type_delete' pk=room_type.id %}">Delete</a>)</li>
+    <li>{{ room_type.name }} - {{ room_type.price }} (<a href="{% url 'room_type_delete' pk=room_type.id %}">Delete</a>)
+    </li>
     {% empty %}
-    <li>No room types yet.</li>
+    <strong>No room types yet.</strong>
     {% endfor %}
 </div>
 {% else %}

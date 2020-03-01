@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Rooms{% endblock %}
+{% block content %}
+
+<div class="ml-5 mt-5">
+    {% if user.is_authenticated %}
+    {% if object_list %}
+    <strong> Room Type - Room </strong>
+    {% endif %}
+    {% for room in object_list %}
+    <li>{{ room.room_type_key }} - {{ room.room_name }} (<a href="{% url 'room_delete' pk=room.id %}">Delete</a>)</li>
+    <img src="/media/{{room.image}}" alt="room image"  height="200" width="300">
+    {% empty %}
+    <strong>No rooms yet.</strong>
+    {% endfor %}
+</div>
+{% else %}
+{% include 'hotels/welcome.html' %}
+{% endif %}
+</div>
+{% endblock %}

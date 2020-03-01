@@ -66,7 +66,7 @@ class RoomManager(models.Model):
         if num_room >= 50:
             raise ValidationError("Max limit of 50 rooms reached for this room type.")
 
-        received_room_name = self.name
+        received_room_name = self.room_name
         name_present = model.objects.filter(room_type_key=room_type_id).filter(room_name=received_room_name)
         if name_present:
             raise ValidationError("For current type, this room is already present")
