@@ -1,0 +1,8 @@
+Credentials:
+    Admin:
+        Username: admin
+        Password: Hotel@123
+
+    Receptionist:
+        Username: receptionist1
+        Password: Hotel@123

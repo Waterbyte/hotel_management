@@ -11,6 +11,3 @@ venv/
 *.log
 *.sqlite3
 /CACHE
-
-#self note files
-notes*
